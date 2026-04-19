@@ -1,33 +1,32 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
-  <title>Million Toggles</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div id="spacer"></div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Million Toggles</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="spacer"></div>
 
-  <canvas id="board"></canvas>
+        <canvas id="board"></canvas>
 
-  <div id="hud">
-    <div class="title">Million Toggles</div>
-    <div class="sub">
-      Check and uncheck live with everyone connected.
-    </div>
+        <div id="hud">
+            <div class="title">Million Toggles</div>
+            <div class="sub">
+                Check and uncheck live with everyone connected.
+            </div>
 
-    <div class="stats">
-      <div><span>Users</span> <strong id="users">0</strong></div>
-      <div><span>Checked</span> <strong id="checkedCount">0</strong></div>
-      <div><span>Done</span> <strong id="percent">0.00%</strong></div>
-    </div>
-  </div>
+            <div class="stats">
+                <div><span>Users</span> <strong id="users">0</strong></div>
+                <div>
+                    <span>Checked</span> <strong id="checkedCount">0</strong>
+                </div>
+                <div><span>Done</span> <strong id="percent">0.00%</strong></div>
+            </div>
+        </div>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="script.js"></script>
-</body>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="script.js"></script>
+    </body>
 </html>
