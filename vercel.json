@@ -1,15 +1,49 @@
 {
-    "version": 2,
-    "builds": [
+  "version": 2,
+  "env": {
+    "NODE_ENV": "production",
+    "DOMAIN": "https://tickgame-websocket.vercel.app"
+  },
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxLambdaSize": "50mb",
+        "nodeVersion": "18.x"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/robots.txt",
+      "dest": "server.js"
+    },
+    {
+      "src": "/sitemap.xml",
+      "dest": "server.js"
+    },
+    {
+      "src": "/public/(.*)",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, immutable"
+      },
+      "dest": "server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "server.js"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/public/(.*)",
+      "headers": [
         {
-            "src": "server.js",
-            "use": "@vercel/node"
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, immutable"
         }
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "server.js"
-        }
-    ]
+      ]
+    }
+  ]
 }

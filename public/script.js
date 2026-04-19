@@ -10,8 +10,26 @@ const ctx = canvas.getContext("2d");
 const usersEl = document.getElementById("users");
 const checkedEl = document.getElementById("checkedCount");
 const percentEl = document.getElementById("percent");
+const statsWidget = document.getElementById("statsWidget");
+const statsToggle = document.getElementById("statsToggle");
+const statsPanel = document.getElementById("statsPanel");
 
 const checked = new Set();
+
+function setStatsExpanded(expanded) {
+    if (!statsWidget || !statsToggle || !statsPanel) return;
+
+    statsWidget.classList.toggle("collapsed", !expanded);
+    statsToggle.setAttribute("aria-expanded", String(expanded));
+    statsPanel.setAttribute("aria-hidden", String(!expanded));
+}
+
+if (statsToggle) {
+    statsToggle.addEventListener("click", () => {
+        const expanded = statsToggle.getAttribute("aria-expanded") === "true";
+        setStatsExpanded(!expanded);
+    });
+}
 
 const spacer = document.getElementById("spacer");
 spacer.style.width = `${GRID_SIZE * CELL_SIZE}px`;
@@ -21,8 +39,10 @@ let drawQueued = false;
 
 function updateStats() {
     const count = checked.size;
-    checkedEl.textContent = count.toLocaleString();
-    percentEl.textContent = `${((count / TOTAL_CELLS) * 100).toFixed(2)}%`;
+    if (checkedEl) checkedEl.textContent = count.toLocaleString();
+    if (percentEl) {
+        percentEl.textContent = `${((count / TOTAL_CELLS) * 100).toFixed(2)}%`;
+    }
 }
 
 function scheduleDraw() {
@@ -137,7 +157,7 @@ socket.on("state:init", ({ checked: initialChecked = [], users }) => {
         checked.add(index);
     }
 
-    usersEl.textContent = users;
+    if (usersEl) usersEl.textContent = users;
     updateStats();
     scheduleDraw();
 });
@@ -153,12 +173,14 @@ socket.on("grid:reset", () => {
 });
 
 socket.on("users:update", (count) => {
-    usersEl.textContent = count;
+    if (usersEl) usersEl.textContent = count;
 });
 
 socket.on("stats:update", ({ checkedCount }) => {
-    checkedEl.textContent = checkedCount.toLocaleString();
-    percentEl.textContent = `${((checkedCount / TOTAL_CELLS) * 100).toFixed(2)}%`;
+    if (checkedEl) checkedEl.textContent = checkedCount.toLocaleString();
+    if (percentEl) {
+        percentEl.textContent = `${((checkedCount / TOTAL_CELLS) * 100).toFixed(2)}%`;
+    }
 });
 
 resizeCanvas();

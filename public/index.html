@@ -2,31 +2,121 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Million Toggles</title>
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"
+        />
+        <meta
+            name="description"
+            content="Real-time multiplayer grid game with 1 million interactive cells. Click, toggle, and sync live with other players globally. WebSocket-powered collaborative experience."
+        />
+        <meta
+            name="keywords"
+            content="multiplayer game, real-time, WebSocket, interactive grid, collaborative, live sync, online game"
+        />
+        <meta name="theme-color" content="#0b1020" />
+        <meta name="color-scheme" content="dark" />
+        <meta
+            name="robots"
+            content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+        />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="black-translucent"
+        />
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website" />
+        <meta
+            property="og:title"
+            content="Tick Game - Real-Time Multiplayer Grid"
+        />
+        <meta
+            property="og:description"
+            content="Interactive game with 1 million cells. Click to toggle, watch others sync in real-time."
+        />
+        <meta property="og:site_name" content="Tick Game WebSocket" />
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+            name="twitter:title"
+            content="Tick Game - Real-Time Multiplayer Grid"
+        />
+        <meta
+            name="twitter:description"
+            content="Interactive game with 1 million cells. Click to toggle, watch others sync in real-time."
+        />
+
+        <!-- Structured Data -->
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "WebApplication",
+                "name": "Tick Game WebSocket",
+                "description": "Real-time multiplayer interactive grid game with WebSocket synchronization",
+                "url": "https://tickgame-websocket.vercel.app",
+                "applicationCategory": "GameApplication",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD"
+                }
+            }
+        </script>
+
+        <title>Tick Game - Real-Time Multiplayer Grid | Play Now</title>
+        <link rel="canonical" href="https://tickgame-websocket.vercel.app" />
         <link rel="stylesheet" href="style.css" />
+        <link
+            rel="icon"
+            type="image/svg+xml"
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230b1020' width='100' height='100'/><rect fill='%2322c55e' x='20' y='20' width='30' height='30'/><path stroke='%23ffffff' stroke-width='3' d='M30 40 L40 50 L55 30' fill='none'/></svg>"
+        />
+        <meta name="preconnect" href="https://socket.io" />
     </head>
     <body>
         <div id="spacer"></div>
 
-        <canvas id="board"></canvas>
+        <canvas
+            id="board"
+            role="application"
+            aria-label="Interactive grid game with 1 million cells"
+        ></canvas>
 
-        <div id="hud">
-            <div class="title">Million Toggles</div>
-            <div class="sub">
-                Check and uncheck live with everyone connected.
-            </div>
-
-            <div class="stats">
-                <div><span>Users</span> <strong id="users">0</strong></div>
+        <section id="statsWidget" class="collapsed" aria-label="Game stats">
+            <button
+                id="statsToggle"
+                type="button"
+                aria-expanded="false"
+                aria-controls="statsPanel"
+            >
+                Stats
+            </button>
+            <div id="statsPanel" aria-hidden="true">
                 <div>
-                    <span>Checked</span> <strong id="checkedCount">0</strong>
+                    <span>Active Players</span>
+                    <strong id="users" aria-live="polite">0</strong>
                 </div>
-                <div><span>Done</span> <strong id="percent">0.00%</strong></div>
+                <div>
+                    <span>Cells Checked</span>
+                    <strong id="checkedCount" aria-live="polite">0</strong>
+                </div>
+                <div>
+                    <span>Progress</span>
+                    <strong id="percent" aria-live="polite">0.00%</strong>
+                </div>
             </div>
-        </div>
+        </section>
 
         <script src="/socket.io/socket.io.js"></script>
-        <script src="script.js"></script>
+        <script src="script.js" defer></script>
+        <noscript>
+            <p style="color: #94a3b8; padding: 20px">
+                This game requires JavaScript to run. Please enable JavaScript
+                in your browser.
+            </p>
+        </noscript>
     </body>
 </html>
