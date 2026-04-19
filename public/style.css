@@ -89,7 +89,6 @@ body {
     display: none;
 }
 
-
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
     * {

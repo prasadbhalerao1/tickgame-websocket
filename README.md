@@ -55,6 +55,32 @@ vercel
 
 The project is configured with `vercel.json` for automatic deployment. Just connect your GitHub repo and deploy!
 
+### Recommended: Enable Upstash Redis (Vercel Storage)
+
+For true shared persistence across serverless instances, add Redis storage:
+
+1. In Vercel dashboard, open your project.
+2. Go to `Storage` and create/connect an Upstash Redis database.
+3. Connect it to this project.
+4. Vercel will automatically add these env vars:
+  - `UPSTASH_REDIS_REST_URL`
+  - `UPSTASH_REDIS_REST_TOKEN`
+5. Redeploy your project.
+
+Legacy fallback is also supported with:
+  - `KV_REST_API_URL`
+  - `KV_REST_API_TOKEN`
+
+Without Redis/KV storage, game state falls back to in-memory storage and may reset during serverless cold starts.
+
+### Vercel Env Template
+
+Use [`.env.vercel.example`](.env.vercel.example) as the production reference. The minimum Vercel values are:
+
+- `NODE_ENV=production`
+- `DOMAIN=https://your-vercel-domain.vercel.app`
+- `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` for persistent state
+
 ## File Structure
 
 ```

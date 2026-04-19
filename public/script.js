@@ -1,5 +1,3 @@
-const socket = io();
-
 const GRID_SIZE = 1000;
 const CELL_SIZE = 12;
 const TOTAL_CELLS = GRID_SIZE * GRID_SIZE;
@@ -15,6 +13,9 @@ const statsToggle = document.getElementById("statsToggle");
 const statsPanel = document.getElementById("statsPanel");
 
 const checked = new Set();
+let usersCount = null;
+let stateVersion = 0;
+let syncInFlight = false;
 
 function setStatsExpanded(expanded) {
     if (!statsWidget || !statsToggle || !statsPanel) return;
@@ -42,6 +43,64 @@ function updateStats() {
     if (checkedEl) checkedEl.textContent = count.toLocaleString();
     if (percentEl) {
         percentEl.textContent = `${((count / TOTAL_CELLS) * 100).toFixed(2)}%`;
+    }
+    if (usersEl) {
+        usersEl.textContent = usersCount == null ? "-" : String(usersCount);
+    }
+}
+
+function applyServerSnapshot(payload) {
+    if (!payload) return;
+
+    if (payload.changed && Array.isArray(payload.checked)) {
+        checked.clear();
+        for (const index of payload.checked) {
+            checked.add(index);
+        }
+        scheduleDraw();
+    }
+
+    if (typeof payload.version === "number") {
+        stateVersion = payload.version;
+    }
+
+    if (typeof payload.users === "number") {
+        usersCount = payload.users;
+    }
+
+    if (typeof payload.checkedCount === "number" && checkedEl) {
+        checkedEl.textContent = payload.checkedCount.toLocaleString();
+    }
+    if (typeof payload.checkedCount === "number" && percentEl) {
+        percentEl.textContent = `${((payload.checkedCount / TOTAL_CELLS) * 100).toFixed(2)}%`;
+    }
+    if (usersEl) {
+        usersEl.textContent = usersCount == null ? "-" : String(usersCount);
+    }
+}
+
+async function syncState(force = false) {
+    if (syncInFlight) return;
+    syncInFlight = true;
+
+    try {
+        const since = force ? -1 : stateVersion;
+        const res = await fetch(
+            `/api/state?since=${encodeURIComponent(since)}`,
+            {
+                cache: "no-store",
+            },
+        );
+        if (!res.ok) return;
+        const payload = await res.json();
+        applyServerSnapshot(payload);
+        if (payload.changed) {
+            updateStats();
+        }
+    } catch {
+        // Ignore transient network errors during polling.
+    } finally {
+        syncInFlight = false;
     }
 }
 
@@ -145,44 +204,42 @@ canvas.addEventListener("click", (e) => {
     const nextValue = !checked.has(index);
 
     setCell(index, nextValue);
-    socket.emit("cell:toggle", index);
+
+    fetch("/api/toggle", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ index }),
+    })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((payload) => {
+            if (!payload) return;
+            if (typeof payload.checked === "boolean") {
+                setCell(index, payload.checked);
+            }
+            applyServerSnapshot(payload);
+        })
+        .catch(() => {
+            // Re-sync on failure to recover optimistic state.
+            syncState(true);
+        });
 });
 
 window.addEventListener("resize", resizeCanvas);
 window.addEventListener("scroll", scheduleDraw, { passive: true });
 
-socket.on("state:init", ({ checked: initialChecked = [], users }) => {
-    checked.clear();
-    for (const index of initialChecked) {
-        checked.add(index);
-    }
-
-    if (usersEl) usersEl.textContent = users;
-    updateStats();
-    scheduleDraw();
-});
-
-socket.on("cell:update", ({ index, checked: value }) => {
-    setCell(index, value);
-});
-
-socket.on("grid:reset", () => {
-    checked.clear();
-    updateStats();
-    scheduleDraw();
-});
-
-socket.on("users:update", (count) => {
-    if (usersEl) usersEl.textContent = count;
-});
-
-socket.on("stats:update", ({ checkedCount }) => {
-    if (checkedEl) checkedEl.textContent = checkedCount.toLocaleString();
-    if (percentEl) {
-        percentEl.textContent = `${((checkedCount / TOTAL_CELLS) * 100).toFixed(2)}%`;
+document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+        syncState(true);
     }
 });
+
+setInterval(() => {
+    syncState(false);
+}, 1200);
 
 resizeCanvas();
 updateStats();
 scheduleDraw();
+syncState(true);

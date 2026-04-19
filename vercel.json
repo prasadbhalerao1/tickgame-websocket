@@ -1,49 +1,58 @@
 {
-  "version": 2,
-  "env": {
-    "NODE_ENV": "production",
-    "DOMAIN": "https://tickgame-websocket.vercel.app"
-  },
-  "builds": [
-    {
-      "src": "server.js",
-      "use": "@vercel/node",
-      "config": {
-        "maxLambdaSize": "50mb",
-        "nodeVersion": "18.x"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/robots.txt",
-      "dest": "server.js"
+    "version": 2,
+    "env": {
+        "NODE_ENV": "production",
+        "DOMAIN": "https://tickgame-websocket.vercel.app"
     },
-    {
-      "src": "/sitemap.xml",
-      "dest": "server.js"
-    },
-    {
-      "src": "/public/(.*)",
-      "headers": {
-        "Cache-Control": "public, max-age=3600, immutable"
-      },
-      "dest": "server.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "server.js"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/public/(.*)",
-      "headers": [
+    "builds": [
         {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600, immutable"
+            "src": "server.js",
+            "use": "@vercel/node",
+            "config": {
+                "maxLambdaSize": "50mb",
+                "nodeVersion": "18.x"
+            }
         }
-      ]
-    }
-  ]
+    ],
+    "routes": [
+        {
+            "src": "/robots.txt",
+            "dest": "server.js"
+        },
+        {
+            "src": "/sitemap.xml",
+            "dest": "server.js"
+        },
+        {
+            "src": "/public/(.*)",
+            "headers": {
+                "Cache-Control": "public, max-age=3600, immutable"
+            },
+            "dest": "server.js"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "server.js"
+        }
+    ],
+    "headers": [
+        {
+            "source": "/api/(.*)",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "no-store"
+                }
+            ]
+        },
+        {
+            "source": "/public/(.*)",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "public, max-age=3600, immutable"
+                }
+            ]
+        }
+    ]
 }

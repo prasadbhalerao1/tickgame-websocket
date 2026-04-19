@@ -24,6 +24,8 @@
         "url": "https://github.com/prasadbhalerao1/tickgame-websocket.git"
     },
     "dependencies": {
+        "@upstash/redis": "^1.37.0",
+        "@vercel/kv": "^3.0.0",
         "dotenv": "^17.4.2",
         "express": "^4.21.2",
         "socket.io": "^4.8.1"
