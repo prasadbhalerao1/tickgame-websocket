@@ -135,8 +135,7 @@ function draw() {
     const scrollY = window.scrollY;
 
     ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = "#0b1020";
-    ctx.fillRect(0, 0, width, height);
+    // Let the CSS radial gradient background shine through instead of a flat fill!
 
     const startCol = Math.max(0, Math.floor(scrollX / CELL_SIZE));
     const endCol = Math.min(
@@ -158,21 +157,27 @@ function draw() {
             const index = row * GRID_SIZE + col;
 
             if (checked.has(index)) {
-                ctx.fillStyle = "#22c55e";
+                // Vibrant green neon fill
+                ctx.fillStyle = "#10b981";
                 ctx.fillRect(x + 1, y + 1, CELL_SIZE - 2, CELL_SIZE - 2);
 
-                ctx.strokeStyle = "#052e16";
+                // Darker inner border
+                ctx.strokeStyle = "#064e3b";
                 ctx.strokeRect(x + 0.5, y + 0.5, CELL_SIZE - 1, CELL_SIZE - 1);
 
+                // Crisp white tick
                 ctx.strokeStyle = "#ffffff";
-                ctx.lineWidth = 1.5;
+                ctx.lineWidth = 1.8;
+                ctx.lineCap = "round";
+                ctx.lineJoin = "round";
                 ctx.beginPath();
                 ctx.moveTo(x + CELL_SIZE * 0.22, y + CELL_SIZE * 0.52);
                 ctx.lineTo(x + CELL_SIZE * 0.42, y + CELL_SIZE * 0.72);
                 ctx.lineTo(x + CELL_SIZE * 0.78, y + CELL_SIZE * 0.28);
                 ctx.stroke();
             } else {
-                ctx.strokeStyle = "#334155";
+                // Subtle bluish empty border
+                ctx.strokeStyle = "rgba(51, 65, 85, 0.6)";
                 ctx.lineWidth = 1;
                 ctx.strokeRect(x + 0.5, y + 0.5, CELL_SIZE - 1, CELL_SIZE - 1);
             }

@@ -77,6 +77,28 @@
         <meta name="preconnect" href="https://socket.io" />
     </head>
     <body>
+        <header id="app-header">
+            <div class="logo">
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <polyline points="9 11 12 14 22 4"></polyline>
+                    <path
+                        d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
+                    ></path>
+                </svg>
+            </div>
+            <div class="titles">
+                <h1>Tick Game</h1>
+                <p>1,000,000 Cells</p>
+            </div>
+        </header>
+
         <div id="spacer"></div>
 
         <canvas
@@ -92,20 +114,48 @@
                 aria-expanded="false"
                 aria-controls="statsPanel"
             >
-                Stats
+                <div class="stats-toggle-content">
+                    <svg
+                        class="stats-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path class="bar-1" d="M12 20V10"></path>
+                        <path class="bar-2" d="M18 20V4"></path>
+                        <path class="bar-3" d="M6 20v-4"></path>
+                    </svg>
+                    <span class="stats-label">Live Stats</span>
+                </div>
+                <svg
+                    class="chevron-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
             </button>
             <div id="statsPanel" aria-hidden="true">
-                <div>
-                    <span>Active Players</span>
-                    <strong id="users" aria-live="polite">0</strong>
-                </div>
-                <div>
-                    <span>Cells Checked</span>
-                    <strong id="checkedCount" aria-live="polite">0</strong>
-                </div>
-                <div>
-                    <span>Progress</span>
-                    <strong id="percent" aria-live="polite">0.00%</strong>
+                <div class="stats-panel-content">
+                    <div>
+                        <span>Active Players</span>
+                        <strong id="users" aria-live="polite">0</strong>
+                    </div>
+                    <div>
+                        <span>Cells Checked</span>
+                        <strong id="checkedCount" aria-live="polite">0</strong>
+                    </div>
+                    <div>
+                        <span>Progress</span>
+                        <strong id="percent" aria-live="polite">0.00%</strong>
+                    </div>
                 </div>
             </div>
         </section>
