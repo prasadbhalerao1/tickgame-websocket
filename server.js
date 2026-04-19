@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const http = require("http");
+const path = require("path");
 const { Server } = require("socket.io");
 const app = express();
 const isVercel = Boolean(process.env.VERCEL);
@@ -34,9 +35,15 @@ const KV_VERSION_KEY = "tickgame:version";
 const checked = new Set();
 let version = 0;
 
-const hasRedisEnv = Boolean(
-    process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN,
-);
+const redisRestUrl =
+    process.env.UPSTASH_REDIS_REST_URL ||
+    process.env.websocket_KV_REST_API_URL ||
+    process.env.websocket_KV_URL ||
+    process.env.websocket_REDIS_URL;
+const redisRestToken =
+    process.env.UPSTASH_REDIS_REST_TOKEN ||
+    process.env.websocket_KV_REST_API_TOKEN;
+const hasRedisEnv = Boolean(redisRestUrl && redisRestToken);
 const hasKvEnv = Boolean(
     process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN,
 );
@@ -47,8 +54,8 @@ if (hasRedisEnv) {
     try {
         const { Redis } = require("@upstash/redis");
         redis = new Redis({
-            url: process.env.UPSTASH_REDIS_REST_URL,
-            token: process.env.UPSTASH_REDIS_REST_TOKEN,
+            url: redisRestUrl,
+            token: redisRestToken,
         });
         console.log("Upstash Redis enabled for persistent game state.");
     } catch {
@@ -81,11 +88,19 @@ function getBaseUrl() {
 // Middleware
 app.use(express.json());
 app.use(
-    express.static("public", {
+    express.static(path.join(__dirname, "public"), {
         maxAge: "1h",
         etag: false,
     }),
 );
+
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+app.get("/index.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 // SEO Routes
 app.get("/robots.txt", (req, res) => {

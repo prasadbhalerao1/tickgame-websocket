@@ -81,6 +81,13 @@ Use [`.env.vercel.example`](.env.vercel.example) as the production reference. Th
 - `DOMAIN=https://your-vercel-domain.vercel.app`
 - `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` for persistent state
 
+The app also accepts these Vercel-style aliases if your storage integration exposes them:
+
+- `websocket_KV_REST_API_URL`
+- `websocket_KV_REST_API_TOKEN`
+- `websocket_KV_URL`
+- `websocket_REDIS_URL`
+
 ## File Structure
 
 ```
